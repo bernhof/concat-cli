@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AssemblyName>concat</AssemblyName>
+    <Version>0.0.1</Version>
+    <Authors>https://github.com/bernhof</Authors>
+    <Company />
+    <Description>Concatenates multiple files into one.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.6.0" />
+    <PackageReference Include="DotNet.Glob" Version="3.0.5" />
+  </ItemGroup>
+
+</Project>
