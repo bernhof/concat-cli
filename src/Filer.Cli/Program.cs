@@ -100,8 +100,8 @@ namespace Filer.Cli
         }
 
         static void ApplyEncoding(OutVerb outVerb) => 
-            Console.OutputEncoding = int.TryParse(outVerb.EncodingName, out var codePage)
+            Console.OutputEncoding = int.TryParse(outVerb.OutputEncoding, out var codePage)
                 ? System.Text.Encoding.GetEncoding(codePage)
-                : System.Text.Encoding.GetEncoding(outVerb.EncodingName);
+                : System.Text.Encoding.GetEncoding(outVerb.OutputEncoding);
     }
 }

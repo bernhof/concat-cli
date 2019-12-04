@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <AssemblyName>doet</AssemblyName>
+    <AssemblyName>filer</AssemblyName>
     <Version>0.0.1</Version>
     <Authors>https://github.com/bernhof</Authors>
     <Company />

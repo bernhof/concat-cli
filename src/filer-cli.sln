@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29424.173
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Filer.Cli", "Concat.Cli\Filer.Cli.csproj", "{FB453F82-6760-4EB3-9244-17132A1A2B67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Filer.Cli", "Filer.Cli\Filer.Cli.csproj", "{FB453F82-6760-4EB3-9244-17132A1A2B67}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Filer.Cli.Tests", "Concat.Cli.Tests\Filer.Cli.Tests.csproj", "{17CD3E83-96FA-4D68-B465-DDFD7EE543F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Filer.Cli.Tests", "Filer.Cli.Tests\Filer.Cli.Tests.csproj", "{17CD3E83-96FA-4D68-B465-DDFD7EE543F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

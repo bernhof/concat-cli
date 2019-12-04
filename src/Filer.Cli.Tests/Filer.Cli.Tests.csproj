@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Concat.Cli\Filer.Cli.csproj" />
+    <ProjectReference Include="..\Filer.Cli\Filer.Cli.csproj" />
   </ItemGroup>
 
 </Project>
