@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Xunit;
 
-namespace Concat.Cli.Tests
+namespace Filer.Cli.Tests
 {
     public class GlobberTests
     {

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <AssemblyName>concat</AssemblyName>
+    <AssemblyName>doet</AssemblyName>
     <Version>0.0.1</Version>
     <Authors>https://github.com/bernhof</Authors>
     <Company />
@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.6.0" />
+    <PackageReference Include="CsvHelper" Version="12.2.1" />
     <PackageReference Include="DotNet.Glob" Version="3.0.5" />
   </ItemGroup>
 

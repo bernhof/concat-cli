@@ -1,9 +1,10 @@
 ﻿using CommandLine;
 using System.Collections.Generic;
 
-namespace Concat.Cli
+namespace Filer.Cli.Verbs
 {
-    class ConcatOptions
+    [Verb("concat", HelpText = "Concatenates multiple files into one")]
+    class ConcatVerb : OutVerb
     {
         /// <summary>
         /// Glob patterns the specify which files to include
@@ -23,10 +24,10 @@ namespace Concat.Cli
         [Option('h', "header", Required = false, Default = "", HelpText = "Header to include before contents of each file. Use \\n for newline, {0} for file name, {1} for path and file name, escape { with {{.")]
         public string Header { get; set; }
 
-        /// <summary>
-        /// Output file name
-        /// </summary>
-        [Option('o', "out", Required = false, HelpText = "Name of output file. Any existing file will be overwritten without prompting. If not specified, output is sent to stdout instead.")]
-        public string OutputFile { get; set; }
+        ///// <summary>
+        ///// Output file name
+        ///// </summary>
+        //[Option('o', "out", Required = false, HelpText = "Name of output file. Any existing file will be overwritten without prompting. If not specified, output is sent to stdout instead.")]
+        //public string OutputFile { get; set; }
     }
 }

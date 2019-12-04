@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Concat.Cli
+namespace Filer.Cli
 {
     public class Globber
     {
