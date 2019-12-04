@@ -1,11 +1,19 @@
-# Concat
-Commandline utility that concatenates files in a directory
+# Filer
+Command line utiliy that performs various mildly useful tasks in a file system.
 
 # Usage
 
-## Windows
+## concat
+Concatenates multiple files
 
 ```
-concat *.sql -s "\ngo\n" > output.sql
-concat *.sql !create.sql -s "\ngo\n" > output.sql
+filer concat *.sql -s "\ngo\n" > output.sql
+filer concat *.sql !create.sql -s "\ngo\n" > output.sql
 ```
+
+## delimiter
+Changes delimiter in a csv file
+
+```
+filer delimiter semicolon.csv ";" "," > comma.csv
+filer delimiter tab.csv "\t" "|" > pipe.csv
