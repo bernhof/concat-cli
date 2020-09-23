@@ -1,8 +1,10 @@
 ﻿using CommandLine;
-using Filer.Cli.Verbs;
 using CsvHelper;
+using Filer.Cli.Verbs;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -12,13 +14,17 @@ namespace Filer.Cli
 {
     class Program
     {
+        const int _exifDateTakenId = 0x9003;
+        const string _exifDateFormat = "yyyy:MM:dd HH:mm:ss\0";
+
         static async Task<int> Main(string[] args)
         {
             try
             {
-                return await Parser.Default.ParseArguments<ConcatVerb, DelimitVerb>(args).MapResult(
+                return await Parser.Default.ParseArguments<ConcatVerb, DelimitVerb, ShiftDateTakenVerb>(args).MapResult(
                     (ConcatVerb o) => Concat(o),
                     (DelimitVerb o) => CsvDelim(o),
+                    (ShiftDateTakenVerb o) => ShiftDateTaken(o),
                     OnParseError);
             }
             catch (Exception ex)
@@ -28,16 +34,58 @@ namespace Filer.Cli
             }
         }
 
-        private static Task<int> OnParseError(IEnumerable<Error> arg)
+        private static Task<int> OnParseError(IEnumerable<Error> _)
         {
             return Task.FromResult(1);
+        }
+
+        private static async Task<int> ShiftDateTaken(ShiftDateTakenVerb options)
+        {
+            var files = Globber.GlobFiles(Environment.CurrentDirectory, options.GlobPatterns.ToArray());
+            var utf8 = System.Text.Encoding.UTF8;
+            var errors = 0;
+
+            foreach (var file in files)
+            {
+                try
+                {
+                    var filePath = Path.Combine(Environment.CurrentDirectory, file);
+                    using var buffer = new MemoryStream();
+                    using (var fileStream = File.OpenRead(filePath))
+                    {
+                        await fileStream.CopyToAsync(buffer);
+                    }
+                    buffer.Position = 0;
+                    using var image = Image.FromStream(buffer);
+                    var dateTakenProperty = image.GetPropertyItem(_exifDateTakenId);
+                    var dateTakenString = utf8.GetString(dateTakenProperty.Value);
+                    var dateTaken = DateTime.ParseExact(dateTakenString, _exifDateFormat, null);
+                    var newDateTaken = dateTaken
+                        .AddYears(options.ShiftYears)
+                        .AddMonths(options.ShiftMonths)
+                        .AddDays(options.ShiftDays)
+                        .AddHours(options.ShiftHours)
+                        .AddMinutes(options.ShiftMinutes)
+                        .AddSeconds(options.ShiftSeconds);
+                    dateTakenProperty.Value = utf8.GetBytes(newDateTaken.ToString(_exifDateFormat, CultureInfo.InvariantCulture));
+                    image.SetPropertyItem(dateTakenProperty);
+                    image.Save(filePath);
+                }
+                catch (Exception ex)
+                {
+                    await Console.Error.WriteLineAsync(string.Format("Could not process file {0}: {1}", file, ex.Message));
+                    errors++;
+                }
+            }
+
+            return errors;
         }
 
         private static async Task<int> CsvDelim(DelimitVerb options)
         {
             ApplyEncoding(options);
-            string currentDelim = ParseSpecialChars(options.CurrentDelimiter);
-            string newDelim = ParseSpecialChars(options.NewDelimiter);
+            var currentDelim = ParseSpecialChars(options.CurrentDelimiter);
+            var newDelim = ParseSpecialChars(options.NewDelimiter);
             using var file = new StreamReader(options.FileName);
             using var csv = new CsvParser(file, new CsvHelper.Configuration.Configuration() { Delimiter = currentDelim });
             using var writer = Console.Out;
@@ -57,25 +105,25 @@ namespace Filer.Cli
         private static async Task<int> Concat(ConcatVerb options)
         {
             ApplyEncoding(options);
-            string sep = string.Empty;
-            string head = string.Empty;
+            var sep = string.Empty;
+            var head = string.Empty;
 
             if (options.Separator != null) sep = ParseSpecialChars(options.Separator);
             if (options.Header != null) head = ParseSpecialChars(options.Header);
             var writer = Console.Out;
             var files = Globber.GlobFiles(Environment.CurrentDirectory, options.GlobPatterns.ToArray());
-            bool first = true;
+            var first = true;
             foreach (var file in files.OrderBy(fn => fn, StringComparer.OrdinalIgnoreCase))
             {
-                string filePath = Path.Combine(Environment.CurrentDirectory, file);
+                var filePath = Path.Combine(Environment.CurrentDirectory, file);
                 try
                 {
                     using var reader = new StreamReader(filePath);
                     if (!first) await writer.WriteAsync(sep);
                     first = false;
                     await writer.WriteAsync(string.Format(head, file, filePath));
-                    char[] buffer = new char[1024 * 10];
-                    int charsRead = 0;
+                    var buffer = new char[1024 * 10];
+                    var charsRead = 0;
                     do
                     {
                         charsRead = await reader.ReadAsync(buffer, 0, buffer.Length);
@@ -99,7 +147,7 @@ namespace Filer.Cli
             return input;
         }
 
-        static void ApplyEncoding(OutVerb outVerb) => 
+        static void ApplyEncoding(OutVerb outVerb) =>
             Console.OutputEncoding = int.TryParse(outVerb.OutputEncoding, out var codePage)
                 ? System.Text.Encoding.GetEncoding(codePage)
                 : System.Text.Encoding.GetEncoding(outVerb.OutputEncoding);

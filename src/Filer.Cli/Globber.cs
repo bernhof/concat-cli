@@ -40,7 +40,7 @@ namespace Filer.Cli
                 return !isNegativeMatch && isPositiveMatch;
             });
 
-            return relativePaths.Where(f => isMatch(f));
+            return relativePaths.Where(f => isMatch(f.ToLowerInvariant()));
         }
 
         static IEnumerable<string> ListFiles(string root)
